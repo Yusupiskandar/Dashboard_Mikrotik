@@ -38,6 +38,8 @@ const navItems: NavItem[] = [
     subItems: [
       { name: "Connect", path: "/connect", pro: false },
       { name: "Dashboard", path: "/mikrotik/dashboard", pro: false },
+      { name: "User Hotspot", path: "/mikrotik/hotspot", pro: false },
+      { name: "User", path: "/mikrotik/users", pro: false },
     ],
   },
   {

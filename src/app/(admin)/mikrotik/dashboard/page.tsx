@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import ConnectionSummary from "@/components/mikrotik/ConnectionSummary";
 import RouterInfoCard from "@/components/mikrotik/RouterInfoCard";
 import StatsCards from "@/components/mikrotik/StatsCards";
-import QuickActions from "@/components/mikrotik/QuickActions";
+import VoucherSalesCard from "@/components/mikrotik/VoucherSalesCard";
 import RecentActivityTable from "@/components/mikrotik/RecentActivityTable";
 
 interface DashboardData {
@@ -31,6 +31,10 @@ interface DashboardData {
     total_hotspot_users: number;
     ppp_active_users: number;
     active_sessions: number;
+    vouchers_sold_this_month: number;
+    vouchers_sold_today: number;
+    estimated_revenue: number;
+    voucher_target: number;
   };
   recent_activity: Array<{
     user: string;
@@ -126,17 +130,30 @@ export default function MikrotikDashboardPage() {
             </span>
           </p>
         </div>
-        <button
-          onClick={fetchDashboard}
-          className="flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-white/[0.04]"
-        >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-            />
-          </svg>
-          Refresh
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={fetchDashboard}
+            className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-50 dark:border-gray-700 dark:bg-transparent dark:text-gray-300 dark:hover:bg-white/[0.04]"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
+            </svg>
+            Refresh
+          </button>
+          <button
+            onClick={handleDisconnect}
+            className="flex items-center gap-2 rounded-lg border border-error-200 bg-error-50 px-4 py-2 text-sm font-medium text-error-600 transition hover:bg-error-100 hover:border-error-300 dark:border-error-800/30 dark:bg-error-500/10 dark:text-error-400 dark:hover:bg-error-500/20"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              />
+            </svg>
+            Disconnect
+          </button>
+        </div>
       </div>
 
       {/* Row 1: Connection Summary + Router Info */}
@@ -148,9 +165,9 @@ export default function MikrotikDashboardPage() {
       {/* Row 2: Stats Cards */}
       <StatsCards stats={data.stats} />
 
-      {/* Row 3: Quick Actions + Recent Activity Table */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[280px_1fr]">
-        <QuickActions onDisconnect={handleDisconnect} />
+      {/* Row 3: Voucher Sales Card + Recent Activity Table */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[290px_1fr]">
+        <VoucherSalesCard stats={data.stats} />
         <RecentActivityTable data={data.recent_activity} />
       </div>
     </div>
