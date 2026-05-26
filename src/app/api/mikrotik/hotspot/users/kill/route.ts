@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       user: session.username,
       password: session.password,
       port: session.port,
-      tls: session.use_ssl,
+      tls: session.use_ssl as any,
       timeout: 8,
     });
 

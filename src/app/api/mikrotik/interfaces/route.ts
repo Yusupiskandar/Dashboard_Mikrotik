@@ -47,30 +47,25 @@ export async function GET() {
 
     const api = await withTimeout(client.connect(), 9000);
 
-    // Fetch active users live
-    const activeUsersResult = await withTimeout(
-      api.menu("/ip/hotspot/active").getAll(),
+    // Fetch all interfaces
+    const interfacesResult = await withTimeout(
+      api.menu("/interface").getAll(),
       5000
     );
 
     client.close();
     client = null;
 
-    const mappedUsers = (activeUsersResult as any[]).map((u: any) => ({
-      id: String(u[".id"] ?? u.id ?? ""),
-      user: String(u.user ?? "-"),
-      address: String(u.address ?? "-"),
-      mac_address: String(u.macAddress ?? u["mac-address"] ?? "-"),
-      uptime: String(u.uptime ?? "-"),
-      server: String(u.server ?? "-"),
-      login_by: String(u.loginBy ?? u["login-by"] ?? "-"),
-      bytes_in: Number(u.bytesIn ?? u["bytes-in"] ?? 0),
-      bytes_out: Number(u.bytesOut ?? u["bytes-out"] ?? 0),
+    const mappedInterfaces = (interfacesResult as any[]).map((i: any) => ({
+      id: String(i[".id"] ?? i.id ?? ""),
+      name: String(i.name ?? "-"),
+      type: String(i.type ?? "ether"),
+      comment: String(i.comment ?? ""),
     }));
 
     return NextResponse.json({
       success: true,
-      data: mappedUsers,
+      data: mappedInterfaces,
     });
   } catch (error: any) {
     try { client?.close(); } catch {}
@@ -78,7 +73,7 @@ export async function GET() {
     return NextResponse.json(
       {
         success: false,
-        message: error.message || "Gagal memuat daftar user hotspot aktif",
+        message: error.message || "Gagal memuat daftar interface router",
       },
       { status: 500 }
     );

@@ -16,6 +16,7 @@ import {
   PlugInIcon,
   TableIcon,
   UserCircleIcon,
+  GroupIcon,
 } from "../icons/index";
 import SidebarWidget from "./SidebarWidget";
 
@@ -40,6 +41,20 @@ const navItems: NavItem[] = [
       { name: "Dashboard", path: "/mikrotik/dashboard", pro: false },
       { name: "User Hotspot", path: "/mikrotik/hotspot", pro: false },
       { name: "User", path: "/mikrotik/users", pro: false },
+      { name: "Trafik", path: "/mikrotik/traffic", pro: false },
+      { name: "Laporan", path: "/mikrotik/report", pro: false },
+    ],
+  },
+  {
+    icon: <GroupIcon />,
+    name: "Pelanggan Bulanan",
+    path: "/mikrotik/billing/customers",
+  },
+  {
+    icon: <BoxCubeIcon />,
+    name: "Master Data",
+    subItems: [
+      { name: "Profile", path: "/mikrotik/billing/profiles", pro: false },
     ],
   },
   {

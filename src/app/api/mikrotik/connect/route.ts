@@ -21,7 +21,7 @@ export async function POST(req: Request) {
       user: username,
       password,
       port: Number(port),
-      tls: Boolean(use_ssl),
+      tls: Boolean(use_ssl) as any,
       timeout: 8, // seconds
     });
 

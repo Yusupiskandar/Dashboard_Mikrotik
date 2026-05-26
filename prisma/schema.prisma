@@ -1,0 +1,45 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Model Baru: Profil Paket Layanan & Harga Jual
+model BillingProfile {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique // Nama paket (misal: "Home-10Mbps", "Family-20Mbps")
+  speed     String     // Batas Kecepatan (misal: "10 Mbps", "20 Mbps")
+  price     Int        // Tarif Bulanan (misal: 150000)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  
+  // Relasi sebaliknya ke Customer
+  customers Customer[]
+}
+
+// Model Pelanggan (Diperbarui untuk berelasi dengan BillingProfile)
+model Customer {
+  id               Int            @id @default(autoincrement())
+  name             String   // Nama Lengkap Pelanggan
+  whatsapp         String   // Nomor WhatsApp aktif untuk notifikasi
+  address          String?  // Alamat rumah instalasi
+  
+  // Pembukuan Akun PPPoE
+  pppoeUsername    String         @unique // Username PPPoE pelanggan
+  pppoePassword    String         // Password PPPoE pelanggan
+  
+  // Relasi Baru ke tabel BillingProfile
+  profileId        Int
+  profile          BillingProfile @relation(fields: [profileId], references: [id])
+  monthlyFee       Int            // Biaya/tarif bulanan (tersinkronisasi saat dibuat/diedit)
+  
+  // Konfigurasi Penagihan
+  dueDay           Int            @default(5) // Jatuh tempo bulanan (tanggal 1-31, default: 5)
+  isActive         Boolean        @default(true) // Status keaktifan internet pelanggan (lokal)
+  
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
