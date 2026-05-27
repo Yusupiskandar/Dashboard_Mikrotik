@@ -259,26 +259,44 @@ export default function CustomersPage() {
     });
   }, [customers, searchTerm, statusFilter]);
 
+  // Calculate total billing fee
+  const totalBillingFee = useMemo(() => {
+    return filteredCustomers.reduce((acc, c) => acc + c.monthlyFee, 0);
+  }, [filteredCustomers]);
+
   return (
     <div className="flex flex-col gap-6">
       {/* Breadcrumb Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between print-hidden">
         <PageBreadcrumb pageTitle="Kelola Pelanggan Bulanan" />
         
-        {/* Tambah Pelanggan Button */}
-        <button
-          onClick={handleOpenAddModal}
-          className="flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2 text-xs font-semibold text-white transition hover:bg-brand-600 self-end sm:self-auto shadow-md"
-        >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
-          </svg>
-          Tambah Pelanggan
-        </button>
+        <div className="flex items-center gap-2 self-end sm:self-auto print-hidden">
+          {/* Export PDF Button */}
+          <button
+            onClick={() => window.print()}
+            className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition dark:border-gray-800 dark:bg-transparent dark:text-gray-300 dark:hover:bg-white/5 shadow-md cursor-pointer"
+          >
+            <svg className="h-4 w-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Export to PDF
+          </button>
+
+          {/* Tambah Pelanggan Button */}
+          <button
+            onClick={handleOpenAddModal}
+            className="flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2 text-xs font-semibold text-white transition hover:bg-brand-600 shadow-md cursor-pointer"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+            </svg>
+            Tambah Pelanggan
+          </button>
+        </div>
       </div>
 
       {/* Filter and Search Box */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] flex flex-col md:flex-row gap-4 items-end">
+      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] flex flex-col md:flex-row gap-4 items-end print-hidden">
         {/* Search */}
         <div className="flex-1 w-full flex flex-col gap-1.5">
           <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Cari Pelanggan</label>
@@ -476,6 +494,17 @@ export default function CustomersPage() {
                     );
                   })}
                 </tbody>
+                <tfoot>
+                  <tr className="bg-gray-50/50 dark:bg-white/[0.01] border-t-2 border-gray-200 dark:border-gray-800">
+                    <td colSpan={6} className="px-4 py-4 text-xs font-bold text-gray-900 dark:text-white text-right">
+                      TOTAL TAGIHAN BULANAN:
+                    </td>
+                    <td className="px-4 py-4 text-xs font-bold text-success-600 dark:text-success-400 text-right font-mono">
+                      {formatIDR(totalBillingFee)}
+                    </td>
+                    <td colSpan={3} className="px-4 py-4"></td>
+                  </tr>
+                </tfoot>
               </table>
             </div>
           )}

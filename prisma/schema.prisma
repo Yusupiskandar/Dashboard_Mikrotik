@@ -40,6 +40,55 @@ model Customer {
   dueDay           Int            @default(5) // Jatuh tempo bulanan (tanggal 1-31, default: 5)
   isActive         Boolean        @default(true) // Status keaktifan internet pelanggan (lokal)
   
+  invoices         Invoice[]      // Relasi ke tabel Invoice
+  
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
 }
+
+// Model Baru: Tagihan Bulanan Pelanggan
+model Invoice {
+  id          Int       @id @default(autoincrement())
+  customerId  Int
+  customer    Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  month       Int       // Bulan tagihan (1-12)
+  year        Int       // Tahun tagihan (contoh: 2026)
+  amount      Int       // Jumlah nominal tagihan (disalin dari customer.monthlyFee)
+  status      String    // "PENDING" atau "PAID"
+  paidAt      DateTime? // Tanggal pelunasan
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  transactions Transaction[]
+
+  @@unique([customerId, month, year]) // Satu pelanggan hanya memiliki satu tagihan per bulan-tahun
+}
+
+// Model Baru: Transaksi Kas Masuk & Keluar
+model Transaction {
+  id          Int      @id @default(autoincrement())
+  type        String   // "INCOME" (Uang Masuk) atau "EXPENSE" (Uang Keluar)
+  category    String   // Kategori transaksi (misal: "TAGIHAN_BULANAN", "PEMBELIAN_ALAT", dll.)
+  amount      Int      // Nominal nominal transaksi
+  description String   // Keterangan atau catatan detail transaksi
+  date        DateTime @default(now()) // Tanggal transaksi kas terjadi
+  
+  // Relasi Opsional ke Invoice (jika bersumber dari pelunasan tagihan bulanan)
+  invoiceId   Int?
+  invoice     Invoice? @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Model Baru: Kategori Transaksi Kas
+model TransactionCategory {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique // Nama kategori (misal: "Bandwidth ISP", "Pembelian Alat")
+  type      String   // "INCOME" (Uang Masuk) atau "EXPENSE" (Uang Keluar)
+  isSystem  Boolean  @default(false) // Jika true, tidak dapat didelete/update
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+

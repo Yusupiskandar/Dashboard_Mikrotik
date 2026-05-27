@@ -750,3 +750,60 @@ span.flatpickr-weekday,
   opacity: 0.8;
   cursor: grabbing; /* Changes the cursor to indicate dragging */
 }
+
+/* ==========================================
+   CSS Konfigurasi Pencetakan (Export to PDF)
+   ========================================== */
+@media print {
+  /* Sembunyikan elemen non-cetak */
+  aside,
+  header,
+  #backdrop,
+  .print-hidden,
+  .no-print,
+  button,
+  select,
+  input,
+  .flex-shrink-0 {
+    display: none !important;
+  }
+  
+  /* Hilangkan margin/padding layout utama */
+  .lg\:ml-\[290px\],
+  .lg\:ml-\[90px\],
+  .ml-0 {
+    margin-left: 0 !important;
+    padding: 0 !important;
+  }
+
+  body {
+    background-color: white !important;
+    color: black !important;
+    font-size: 11px !important;
+  }
+
+  /* Hilangkan border/shadow dekoratif */
+  .rounded-2xl, .rounded-xl, .shadow-sm, .border {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+  }
+
+  /* Optimasi Tabel Cetak */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+  
+  th, td {
+    border-bottom: 1px solid #e4e7ec !important;
+    padding: 8px 4px !important;
+  }
+
+  /* Set Margins Kertas A4 Landscape */
+  @page {
+    size: landscape;
+    margin: 15mm 10mm 15mm 10mm;
+  }
+}
